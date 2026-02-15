@@ -26,8 +26,12 @@ YOUTUBE_CHANNEL_IDS = [
 DISCORD_CHANNEL_ID = 1379815933379481644
 
 # ===== Discord設定 =====
+# ===== Discord設定 =====
 intents = discord.Intents.default()
+intents.members = True  # Server Members Intent を有効化
+
 client = discord.Client(intents=intents)
+
 
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
