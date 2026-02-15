@@ -2,8 +2,8 @@ import os
 import discord
 from discord.ext import tasks
 from googleapiclient.discovery import build
-import threading
 from flask import Flask
+import threading
 
 # ===== 環境変数 =====
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -65,24 +65,25 @@ async def check_live():
                         f"https://www.youtube.com/watch?v={video_id}"
                     )
 
-# ===== 起動時 =====
 @client.event
 async def on_ready():
-    print("起動成功")
+    print("Discordログイン成功")
     check_live.start()
 
-# ===== Flask（Render無料用） =====
+# ===== Flask（メインで起動）=====
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     return "Bot is running!"
 
-def run_web():
+def run_discord():
+    client.run(DISCORD_TOKEN)
+
+# Discordを別スレッドで起動
+threading.Thread(target=run_discord).start()
+
+# Flaskをメインで起動（Render用）
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
-threading.Thread(target=run_web).start()
-
-# ===== 最後に起動 =====
-client.run(DISCORD_TOKEN)
